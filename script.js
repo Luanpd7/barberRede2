@@ -20,10 +20,12 @@ fileInput.addEventListener('change', function() {
     };
     reader.readAsDataURL(file);
   }
+  alert('Foto importada!');
 });
 
 // Adicionar um evento ao formulário para quando ele for enviado
 form.addEventListener('submit', function(event) {
+  
   event.preventDefault(); // Impedir o comportamento padrão de recarregar a página
 
   // Capturar o valor do textarea
@@ -49,7 +51,11 @@ form.addEventListener('submit', function(event) {
 
     // Se houver uma imagem selecionada, exibir a imagem no post
     if (selectedImage) {
-      postHtml += `<img src="${selectedImage}" alt="Imagem do post" class="postImage">`;
+      postHtml += `
+        <div class="postImageWrapper">
+          <img src="${selectedImage}" alt="Imagem do post" class="postImage">
+          
+        </div>`;
     }
 
     postHtml += `
@@ -68,28 +74,25 @@ form.addEventListener('submit', function(event) {
     selectedImage = null;
     fileInput.value = '';
 
-    // Adicionar funcionalidade de edição e exclusão
-    const editButton = newPost.querySelector('.editPost');
+    // Adicionar funcionalidade de remoção da imagem, edição e exclusão do post
+    const removeImageBtn = newPost.querySelector('.removeImageBtn');
     const deleteButton = newPost.querySelector('.deletePost');
-    const postParagraph = newPost.querySelector('.postContent');
+    const postImageWrapper = newPost.querySelector('.postImageWrapper');
 
-    // Função para editar o post
-    editButton.addEventListener('click', function() {
-      const newContent = prompt('Edite seu comentário:', postParagraph.textContent);
-      if (newContent !== null && newContent.trim() !== '') {
-        postParagraph.textContent = newContent;
-      } else if (newContent === '') {
-        alert('O comentário não pode ficar vazio!');
-      }
-    });
+    // Função para remover a imagem
+    if (removeImageBtn) {
+      removeImageBtn.addEventListener('click', function() {
+        postImageWrapper.remove(); // Remove o wrapper da imagem
+        selectedImage = null; // Limpa a imagem selecionada
+      });
+    }
 
     // Função para excluir o post
     deleteButton.addEventListener('click', function() {
-      if (confirm('Você tem certeza que deseja excluir este comentário?')) {
+      if (confirm('Você tem certeza que deseja excluir esta publicação?')) {
         newPost.remove();
       }
     });
-
   } else {
     alert('Por favor, escreva algo ou selecione uma imagem antes de publicar!');
   }
